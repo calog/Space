@@ -38,7 +38,7 @@ int main(void)
 		return -1;
 	}
 
-	if (!al_init_image_addon) 
+	if (!al_init_image_addon()) 
 	{
 		al_shutdown_image_addon();
 		fprintf(stderr, "failed to load image addon!\n");
@@ -61,7 +61,7 @@ int main(void)
 	ALLEGRO_EVENT ev;
 	ALLEGRO_EVENT_QUEUE* queue = al_create_event_queue();
 	al_register_event_source(queue, al_get_display_event_source(display)); //registra display (ej: que se cierre)
-	al_register_event_source(queue, al_get_keyboard_event_source());//registra teclado
+	//al_register_event_source(queue, al_get_keyboard_event_source());//registra teclado
 
 	do {
 		al_get_next_event(queue, &ev);
@@ -70,12 +70,12 @@ int main(void)
 
 		case ALLEGRO_EVENT_KEY_DOWN:
 			if (ev.keyboard.keycode == ALLEGRO_KEY_LEFT) {
-				al_draw_bitmap(playerTexture, p.x - 10, p.y, NULL);
+				al_draw_bitmap(playerTexture, p.x - 10, p.y, 0);
 				//al_draw_circle(p.x - 10, p.y, 5, al_map_rgb(0, 0, 0), 1);
 				p.x = p.x - 10;
 			}
 			else if (ev.keyboard.keycode == ALLEGRO_KEY_RIGHT) {
-				al_draw_bitmap(playerTexture, p.x + 10, p.y, NULL);
+				al_draw_bitmap(playerTexture, p.x + 10, p.y,0);
 				//al_draw_circle(p.x + 10, p.y, 5, al_map_rgb(0, 0, 0), 1);
 				p.x = p.x + 10;
 			}
