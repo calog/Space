@@ -1,7 +1,18 @@
-﻿#include <stdio.h>
+﻿/*Standart*/
+#include <stdio.h>
+#include <stdlib.h>
+
+/*Allegro*/
 #include <allegro5/allegro5.h>
 #include <allegro5/allegro_color.h> // NO OLVIDAR AGREGAR EN EL LINKER DEL PROYECTO
 #include <allegro5/allegro_primitives.h> // NO OLVIDAR AGREGAR EN EL LINKER DEL PROYECTO
+#include <allegro5/events.h>
+#include <allegro5/allegro_image.h>
+#include <allegro5/keyboard.h>
+#include <allegro5/keycodes.h>
+
+/*Structs*/
+#include "player.h"
 
 #define D_WIDTH		800
 #define D_HEIGHT	600
@@ -27,56 +38,54 @@ int main(void)
 		return -1;
 	}
 
-	al_clear_to_color(al_color_name("black"));
-	al_flip_display();
-	//Ir viendolo desde el manual, asi se acostumbran a leerlo
+	if (!al_init_image_addon) 
+	{
+		al_shutdown_image_addon();
+		fprintf(stderr, "failed to load image addon!\n");
+		return -1;
+	}
+
+	/*Player*/
+	player_t p;
+	p.x = 20;
+	p.y = 20;
+	p.state = 1;
 
 
 	al_clear_to_color(al_color_name("black"));
-	al_draw_line(0, 0, D_WIDTH, D_HEIGHT, al_color_name("papayawhip"), 40.0);
 	al_flip_display();
+	ALLEGRO_BITMAP* playerTexture = al_load_bitmap("player.jpg");
+	
 
-	al_rest(2.0);
+	/*Allegro events*/
+	ALLEGRO_EVENT ev;
+	ALLEGRO_EVENT_QUEUE* queue = al_create_event_queue();
+	al_register_event_source(queue, al_get_display_event_source(display)); //registra display (ej: que se cierre)
+	al_register_event_source(queue, al_get_keyboard_event_source());//registra teclado
 
+	do {
+		al_get_next_event(queue, &ev);
 
-	al_clear_to_color(al_color_name("black"));
-	al_draw_circle(D_WIDTH / 2, D_HEIGHT / 2, 200.0, al_color_name("lavenderblush"), 10.0);
-	al_flip_display();
+		switch (ev.type) {
 
+		case ALLEGRO_EVENT_KEY_DOWN:
+			if (ev.keyboard.keycode == ALLEGRO_KEY_LEFT) {
+				al_draw_bitmap(playerTexture, p.x - 10, p.y, NULL);
+				//al_draw_circle(p.x - 10, p.y, 5, al_map_rgb(0, 0, 0), 1);
+				p.x = p.x - 10;
+			}
+			else if (ev.keyboard.keycode == ALLEGRO_KEY_RIGHT) {
+				al_draw_bitmap(playerTexture, p.x + 10, p.y, NULL);
+				//al_draw_circle(p.x + 10, p.y, 5, al_map_rgb(0, 0, 0), 1);
+				p.x = p.x + 10;
+			}
+		}
 
+		al_clear_to_color(al_map_rgb(255, 255, 255));
+		al_flip_display();
 
-	al_rest(2.0);
+	} while (ev.type != ALLEGRO_EVENT_DISPLAY_CLOSE);
 
-	al_clear_to_color(al_color_name("black"));
-	al_draw_filled_circle(D_WIDTH / 2, D_HEIGHT / 2, 200.0, al_color_name("hotpink"));
-	al_flip_display();
-
-
-	al_rest(2.0);
-
-	al_clear_to_color(al_color_name("black"));
-	al_draw_rectangle(D_WIDTH / 2, D_HEIGHT / 2, D_WIDTH / 2 + 300, D_HEIGHT / 2 + 250, al_color_name("mediumspringgreen"), 20.0);
-	al_flip_display();
-
-
-	al_rest(2.0);
-
-	al_clear_to_color(al_color_name("black"));
-	al_draw_filled_rectangle(D_WIDTH / 2, D_HEIGHT / 2, D_WIDTH / 2 + 300, D_HEIGHT / 2 + 250, al_color_name("mediumspringgreen"));
-	al_flip_display();
-
-
-	al_rest(2.0);
-
-	al_clear_to_color(al_color_name("black"));
-	al_draw_ellipse(D_WIDTH / 2, D_HEIGHT / 2, 200.0, 160.0, al_color_name("lemonchiffon"), 10.0);
-	al_flip_display();
-
-	al_rest(2.0);
-
-
-	al_destroy_display(display);
-	al_shutdown_primitives_addon();
 	return 0;
 }
 
