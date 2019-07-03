@@ -55,7 +55,7 @@ int main(void)
 	al_clear_to_color(al_color_name("black"));
 	al_flip_display();
 	ALLEGRO_BITMAP* playerTexture = al_load_bitmap("player.jpg");
-	
+	al_flip_display();
 
 	/*Allegro events*/
 	ALLEGRO_EVENT ev;
@@ -81,11 +81,12 @@ int main(void)
 			}
 		}
 
-		al_clear_to_color(al_map_rgb(255, 255, 255));
+		al_clear_to_color(al_map_rgb(255, 0, 255));
 		al_flip_display();
+		
 
 	} while (ev.type != ALLEGRO_EVENT_DISPLAY_CLOSE);
-
+	al_destroy_display(display);
 	return 0;
 }
 
